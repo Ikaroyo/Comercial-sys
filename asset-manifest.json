@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.css": "/Comercial-sys/static/css/main.31d6cfe0.css",
+    "main.js": "/Comercial-sys/static/js/main.6d4e033d.js",
+    "index.html": "/Comercial-sys/index.html",
+    "main.6d4e033d.js.map": "/Comercial-sys/static/js/main.6d4e033d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.31d6cfe0.css",
+    "static/js/main.6d4e033d.js"
+  ]
+}
