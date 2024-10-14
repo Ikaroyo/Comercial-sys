@@ -115,15 +115,97 @@ function ListadoTab() {
     setEditItem((prevItem) => ({ ...prevItem, [name]: value }));
   };
 
+  const handleExport = () => {
+    const exportWindow = window.open(
+      "",
+      "ExportWindow",
+      "width=800,height=600"
+    );
+    exportWindow.document.write(`
+      <html>
+        <head>
+          <title>Listado de Registros</title>
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+          <style>
+            body {
+              font-family: 'Roboto', sans-serif;
+              padding: 20px;
+            }
+            table {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            th, td {
+              border: 1px solid #ddd;
+              padding: 8px;
+              text-align: left;
+            }
+            th {
+              background-color: #f2f2f2;
+              font-weight: bold;
+            }
+            tr:nth-child(even) {
+              background-color: #f9f9f9;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Listado de Registros</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Agente</th>
+                <th>Nombre y Apellido</th>
+                <th>Calle Nº</th>
+                <th>Fecha</th>
+                <th>Número de Cuenta</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredData
+                .map(
+                  (item) => `
+                <tr>
+                  <td>${item.tipo}</td>
+                  <td>${item.empleado}</td>
+                  <td>${item.nombreApellido}</td>
+                  <td>${item.calle} ${item.numero}</td>
+                  <td>${new Date(item.fecha).toLocaleDateString()}</td>
+                  <td>${item.numeroCuenta}</td>
+                  <td>${item.email}</td>
+                  <td>${item.telefono}</td>
+                </tr>
+              `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `);
+    exportWindow.document.close();
+  };
+
   return (
     <>
       <Button
         onClick={fetchData}
         variant="contained"
         color="primary"
-        style={{ marginBottom: "1rem" }}
+        style={{ marginBottom: "1rem", marginRight: "1rem" }}
       >
         Recargar datos
+      </Button>
+      <Button
+        onClick={handleExport}
+        variant="contained"
+        color="secondary"
+        style={{ marginBottom: "1rem" }}
+      >
+        Exportar listado
       </Button>
       <FormControl fullWidth margin="normal">
         <InputLabel>Tipo</InputLabel>
@@ -161,9 +243,13 @@ function ListadoTab() {
           <TableHead>
             <TableRow>
               <TableCell>Tipo</TableCell>
+              <TableCell>Agente</TableCell>
+              <TableCell>Nombre y Apellido</TableCell>
+              <TableCell>Calle Nº</TableCell>
               <TableCell>Fecha</TableCell>
               <TableCell>Número de Cuenta</TableCell>
               <TableCell>Email</TableCell>
+              <TableCell>Teléfono</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -171,11 +257,15 @@ function ListadoTab() {
             {filteredData.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.tipo}</TableCell>
+                <TableCell>{item.empleado}</TableCell>
+                <TableCell>{item.nombreApellido}</TableCell>
+                <TableCell>{`${item.calle} ${item.numero}`}</TableCell>
                 <TableCell>
                   {new Date(item.fecha).toLocaleDateString()}
                 </TableCell>
                 <TableCell>{item.numeroCuenta}</TableCell>
                 <TableCell>{item.email}</TableCell>
+                <TableCell>{item.telefono}</TableCell>
                 <TableCell>
                   <Button onClick={() => handleEdit(item)}>Editar</Button>
                 </TableCell>

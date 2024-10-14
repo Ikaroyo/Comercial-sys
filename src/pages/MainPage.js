@@ -27,7 +27,7 @@ function MainPage() {
         aria-label="Pestañas de formularios"
       >
         <Tab label="Reclamos" />
-        <Tab label="Solicitudes" />
+        <Tab label="Solicitud Email" />
         <Tab label="Listado" />
       </Tabs>
       <TabPanel value={tabValue} index={0}>

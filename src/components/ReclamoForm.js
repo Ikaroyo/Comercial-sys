@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button, Grid, Snackbar } from "@mui/material";
+import { TextField, Button, Grid, Snackbar, Autocomplete } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import axios from "axios";
 
@@ -8,6 +8,9 @@ function ReclamoForm() {
     empleado: "",
     fecha: new Date().toISOString().split("T")[0],
     numeroCuenta: "",
+    nombreApellido: "",
+    calle: "",
+    numero: "",
     email: "",
     telefono: "",
     comentario: "",
@@ -15,6 +18,7 @@ function ReclamoForm() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [calles, setCalles] = useState([]);
 
   useEffect(() => {
     // Cargar el nombre del empleado desde el almacenamiento local
@@ -22,6 +26,17 @@ function ReclamoForm() {
     if (empleadoGuardado) {
       setFormData((prevData) => ({ ...prevData, empleado: empleadoGuardado }));
     }
+
+    // Cargar las calles desde calles.json
+    const cargarCalles = async () => {
+      try {
+        const response = await axios.get("/calles.json");
+        setCalles(response.data);
+      } catch (error) {
+        console.error("Error al cargar las calles:", error);
+      }
+    };
+    cargarCalles();
   }, []);
 
   const handleChange = (event) => {
@@ -49,6 +64,7 @@ function ReclamoForm() {
         ...prevData,
         fecha: new Date().toISOString().split("T")[0],
         numeroCuenta: "",
+        nombreApellido: "",
         email: "",
         telefono: "",
         comentario: "",
@@ -79,6 +95,7 @@ function ReclamoForm() {
             value={formData.empleado}
             onChange={handleChange}
             required
+            autoComplete="off"
           />
         </Grid>
         <Grid item xs={12}>
@@ -90,6 +107,7 @@ function ReclamoForm() {
             value={formData.fecha}
             InputLabelProps={{ shrink: true }}
             disabled
+            autoComplete="off"
           />
         </Grid>
         <Grid item xs={12}>
@@ -101,6 +119,53 @@ function ReclamoForm() {
             onChange={handleChange}
             inputProps={{ pattern: "\\d{7}/\\d{3}" }}
             required
+            autoComplete="off"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="Nombre y Apellido"
+            name="nombreApellido"
+            value={formData.nombreApellido}
+            onChange={handleChange}
+            required
+            autoComplete="off"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Autocomplete
+            fullWidth
+            options={calles}
+            renderInput={(params) => (
+              <TextField {...params} label="Calle" required />
+            )}
+            value={formData.calle}
+            onChange={(event, newValue) => {
+              setFormData((prevData) => ({ ...prevData, calle: newValue }));
+            }}
+            onInputChange={(event, newInputValue) => {
+              setFormData((prevData) => ({
+                ...prevData,
+                calle: newInputValue,
+              }));
+            }}
+            filterOptions={(options, { inputValue }) =>
+              options.filter((option) =>
+                option.toLowerCase().includes(inputValue.toLowerCase())
+              )
+            }
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="Número"
+            name="numero"
+            value={formData.numero}
+            onChange={handleChange}
+            required
+            autoComplete="off"
           />
         </Grid>
         <Grid item xs={12}>
@@ -111,6 +176,7 @@ function ReclamoForm() {
             type="email"
             value={formData.email}
             onChange={handleChange}
+            autoComplete="off"
           />
         </Grid>
         <Grid item xs={12}>
@@ -120,6 +186,7 @@ function ReclamoForm() {
             name="telefono"
             value={formData.telefono}
             onChange={handleChange}
+            autoComplete="off"
           />
         </Grid>
         <Grid item xs={12}>
@@ -131,6 +198,7 @@ function ReclamoForm() {
             rows={4}
             value={formData.comentario}
             onChange={handleChange}
+            autoComplete="off"
           />
         </Grid>
         <Grid item xs={12}>
